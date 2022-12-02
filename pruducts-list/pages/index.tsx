@@ -6,8 +6,8 @@ import ProductCard from "../components/ProductCard";
 import PriceRangeFilter from "../components/PriceRangeFilter";
 import ColorFilter from "../components/ColorFilter";
 import RatingFilter from "../components/RatingFilter";
-import { useState, useMemo } from 'react';
-import { Filter } from '../types';
+import { useState, useMemo } from "react";
+import { Filter } from "../types";
 
 type Props = {
   products: Product[];
@@ -30,9 +30,18 @@ const Home: NextPage<Props> = ({ products }) => {
     rating: null,
   });
 
-  const matches = useMemo(() => {})
+  const matches = useMemo(() => {
+    const filtersToApply = Object.values(filters).filter(Boolean);
+    let matches = products;
 
-  console.log(filters)
+    for (let filter of filtersToApply) {
+      matches = matches.filter(filter!);
+    }
+
+    return matches;
+  }, [products, filters]);
+
+  console.log(matches);
 
   return (
     <main style={{ display: "flex", gap: 12 }}>
@@ -44,22 +53,29 @@ const Home: NextPage<Props> = ({ products }) => {
             setFilters((filters) => ({ ...filters, color: filter }))
           }
         />
-        <RatingFilter />
+        <RatingFilter
+          onChange={(filter: Filter) =>
+            setFilters((filters) => ({ ...filters, rating: filter }))
+          }
+        />
       </aside>
-      <section
-        style={{
-          flex: 1,
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-          gap: "12px",
-        }}
-      >
-        {products.map((product) => (
-          <article key={product.id}>
-            <ProductCard product={product} />
-          </article>
-        ))}
-      </section>
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <h2>{matches.length} resultados</h2>
+        <section
+          style={{
+            flex: 1,
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+            gap: "12px",
+          }}
+        >
+          {matches.map((product) => (
+            <article key={product.id}>
+              <ProductCard product={product} />
+            </article>
+          ))}
+        </section>
+      </div>
     </main>
   );
 };

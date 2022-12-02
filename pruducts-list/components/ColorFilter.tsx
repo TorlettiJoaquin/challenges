@@ -27,7 +27,8 @@ const ColorFilter: React.FC<Props> = ({ products, onChange }) => {
       draft.delete(color);
     }
 
-    onChange((product) => draft.has(product.color));
+    onChange(draft.size ? (product) => draft.has(product.color) : null);
+
     setSelected(draft);
   }
 
@@ -35,6 +36,7 @@ const ColorFilter: React.FC<Props> = ({ products, onChange }) => {
     <div
       style={{
         border: "1px solid white",
+        padding: "12px",
         display: "flex",
         flexDirection: "column",
         gap: 12,
@@ -43,14 +45,16 @@ const ColorFilter: React.FC<Props> = ({ products, onChange }) => {
       <h4>Colors</h4>
       <ul>
         {colors.map((color) => (
-          <li key={color} style={{ display: "flex", gap: 12 }}>
-            <input
-              onChange={(e) => handleChange(color, e.target.checked)}
-              type="checkbox"
-              name="color"
-              value={color}
-            />
-            <label>{color}</label>
+          <li style={{ listStyle: "none" }} key={color}>
+            <label style={{ display: "flex", gap: 12 }}>
+              <input
+                onChange={(e) => handleChange(color, e.target.checked)}
+                type="checkbox"
+                name="color"
+                value={color}
+              />
+              {color}
+            </label>
           </li>
         ))}
       </ul>
