@@ -6,20 +6,25 @@ type Props = {
 };
 
 const PriceRangeFilter: React.FC<Props> = ({ onChange }) => {
+  const [min, setMin] = useState<number>(0);
+  const [max, setMax] = useState<number>(0);
+
   const [selected, setSelected] = useState<Set<number>>(() => new Set());
 
-  function handleChange(rating: number, isChecked: boolean) {
-    const draft = structuredClone(selected);
+  function handleChangeMin(value: number) {
+    setMin(value);
 
-    if (isChecked) {
-      draft.add(rating);
-    } else {
-      draft.delete(rating);
-    }
+    onChange(
+      value ? (product) => product.price >= value && product.price <= max : null
+    );
+  }
 
-    onChange(draft.size ? (product) => draft.has(product.rating) : null);
+  function handleChangeMax(value: number) {
+    setMax(value);
 
-    setSelected(draft);
+    onChange(
+      value ? (product) => product.price >= min && product.price <= value : null
+    );
   }
 
   return (
@@ -34,19 +39,28 @@ const PriceRangeFilter: React.FC<Props> = ({ onChange }) => {
     >
       <h4>Price</h4>
       <ul>
-        {[1, 2, 3, 4, 5].map((rating) => (
-          <li style={{ listStyle: "none" }} key={String(rating)}>
-            <label style={{ display: "flex", gap: 12, color: "gold" }}>
-              <input
-                onChange={(e) => handleChange(rating, e.target.checked)}
-                type="number"
-                name="rating"
-                value={rating}
-              />
-              {"★".repeat(rating).padEnd(5, "☆")}
-            </label>
-          </li>
-        ))}
+        <li style={{ listStyle: "none" }}>
+          <label style={{ display: "flex", gap: 12 }}>
+            Minimo:
+            <input
+              onChange={(e) => handleChangeMin(Number(e.target.value))}
+              type="number"
+              name="price"
+              value={min}
+            />
+          </label>
+        </li>
+        <li style={{ listStyle: "none" }}>
+          <label style={{ display: "flex", gap: 12 }}>
+            Maximo:
+            <input
+              onChange={(e) => handleChangeMax(Number(e.target.value))}
+              type="number"
+              name="price"
+              value={max}
+            />
+          </label>
+        </li>
       </ul>
     </div>
   );

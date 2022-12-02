@@ -46,7 +46,11 @@ const Home: NextPage<Props> = ({ products }) => {
   return (
     <main style={{ display: "flex", gap: 12 }}>
       <aside>
-        <PriceRangeFilter />
+        <PriceRangeFilter
+          onChange={(filter: Filter) =>
+            setFilters((filters) => ({ ...filters, price: filter }))
+          }
+        />
         <ColorFilter
           products={products}
           onChange={(filter: Filter) =>
